@@ -1,0 +1,26 @@
+let io = import('std/io');
+let cmake = import('std/cmakeGen');
+
+let builder = cmake.new('bigNum');
+
+# requires the GNU GMP library
+let gmpDep = builder.addDep('gmp');
+gmpDep.makeReqd();
+# requires the GNU MPFR library
+let mpfrDep = builder.addDep('mpfr');
+mpfrDep.makeReqd();
+
+let commonLib = builder.addSharedLib('Common');
+commonLib.addDep(gmpDep).addDep(mpfrDep);
+
+let bigIntType = builder.addSharedLib('BigIntType');
+bigIntType.addDep(commonLib);
+let bigFltType = builder.addSharedLib('BigFltType');
+bigFltType.addDep(commonLib);
+
+let bigIntLib = builder.addSharedLib('BigInt');
+bigIntLib.addDep(bigIntType).addDep(bigFltType);
+let bigFltLib = builder.addSharedLib('BigFlt');
+bigFltLib.addDep(bigFltType).addDep(bigIntType);
+
+builder.gen();
