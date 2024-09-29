@@ -1,6 +1,6 @@
-mload('bigNum/Common');
-mload('bigNum/BigInt');
-mload('bigNum/BigFlt');
+loadlib('bigNum/Common');
+loadlib('bigNum/BigInt');
+loadlib('bigNum/BigFlt');
 
 let time = import('std/time');
 

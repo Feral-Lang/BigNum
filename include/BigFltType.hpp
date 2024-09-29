@@ -11,13 +11,13 @@ class VarBigFlt : public Var
 	mpfr_t val;
 
 public:
-	VarBigFlt(const ModuleLoc *loc, long double _val);
-	VarBigFlt(const ModuleLoc *loc, mpfr_srcptr _val);
-	VarBigFlt(const ModuleLoc *loc, mpz_srcptr _val);
-	VarBigFlt(const ModuleLoc *loc, const char *_val);
+	VarBigFlt(ModuleLoc loc, long double _val);
+	VarBigFlt(ModuleLoc loc, mpfr_srcptr _val);
+	VarBigFlt(ModuleLoc loc, mpz_srcptr _val);
+	VarBigFlt(ModuleLoc loc, const char *_val);
 	~VarBigFlt();
 
-	Var *copy(const ModuleLoc *loc) override;
+	Var *copy(ModuleLoc loc) override;
 	void set(Var *from) override;
 
 	inline mpfr_ptr get() { return val; }

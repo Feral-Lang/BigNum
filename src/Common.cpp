@@ -4,8 +4,8 @@
 
 gmp_randstate_t rngstate;
 
-Var *rngSeed(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
-	     const Map<String, AssnArgData> &assn_args)
+Var *rngSeed(Interpreter &vm, ModuleLoc loc, Span<Var *> args,
+	     const StringMap<AssnArgData> &assn_args)
 {
 	if(!args[1]->is<VarBigInt>()) {
 		vm.fail(loc,

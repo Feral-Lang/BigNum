@@ -5,8 +5,8 @@
 /////////////////////////////////////////// Functions ////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-Var *bigIntNewNative(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
-		     const Map<String, AssnArgData> &assn_args)
+Var *bigIntNewNative(Interpreter &vm, ModuleLoc loc, Span<Var *> args,
+		     const StringMap<AssnArgData> &assn_args)
 {
 	if(!args[1]->is<VarInt>() && !args[1]->is<VarStr>() && !args[1]->is<VarBigInt>() &&
 	   !args[1]->is<VarBigFlt>())
@@ -31,8 +31,8 @@ Var *bigIntNewNative(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
 }
 
 #define ARITHI_FUNC(fn, name)                                                                    \
-	Var *bigInt##fn(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,                 \
-			const Map<String, AssnArgData> &assn_args)                               \
+	Var *bigInt##fn(Interpreter &vm, ModuleLoc loc, Span<Var *> args,                        \
+			const StringMap<AssnArgData> &assn_args)                                 \
 	{                                                                                        \
 		if(args[1]->is<VarBigInt>()) {                                                   \
 			VarBigInt *res =                                                         \
@@ -57,8 +57,8 @@ Var *bigIntNewNative(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
 	}
 
 #define ARITHI_ASSN_FUNC(fn, name)                                                               \
-	Var *bigIntAssn##fn(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,             \
-			    const Map<String, AssnArgData> &assn_args)                           \
+	Var *bigIntAssn##fn(Interpreter &vm, ModuleLoc loc, Span<Var *> args,                    \
+			    const StringMap<AssnArgData> &assn_args)                             \
 	{                                                                                        \
 		if(args[1]->is<VarBigInt>()) {                                                   \
 			mpz_##name(as<VarBigInt>(args[0])->get(),                                \
@@ -82,8 +82,8 @@ Var *bigIntNewNative(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
 	}
 
 #define LOGICI_FUNC(fn, name, sym)                                                         \
-	Var *bigInt##fn(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,           \
-			const Map<String, AssnArgData> &assn_args)                         \
+	Var *bigInt##fn(Interpreter &vm, ModuleLoc loc, Span<Var *> args,                  \
+			const StringMap<AssnArgData> &assn_args)                           \
 	{                                                                                  \
 		if(args[1]->is<VarBigInt>()) {                                             \
 			return mpz_cmp(as<VarBigInt>(args[0])->getSrc(),                   \
@@ -111,8 +111,8 @@ LOGICI_FUNC(GT, gt, >)
 LOGICI_FUNC(LE, le, <=)
 LOGICI_FUNC(GE, ge, >=)
 
-Var *bigIntEq(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
-	      const Map<String, AssnArgData> &assn_args)
+Var *bigIntEq(Interpreter &vm, ModuleLoc loc, Span<Var *> args,
+	      const StringMap<AssnArgData> &assn_args)
 {
 	if(args[1]->is<VarBigInt>()) {
 		return mpz_cmp(as<VarBigInt>(args[0])->getSrc(),
@@ -123,8 +123,8 @@ Var *bigIntEq(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
 	return vm.getFalse();
 }
 
-Var *bigIntNe(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
-	      const Map<String, AssnArgData> &assn_args)
+Var *bigIntNe(Interpreter &vm, ModuleLoc loc, Span<Var *> args,
+	      const StringMap<AssnArgData> &assn_args)
 {
 	if(args[1]->is<VarBigInt>()) {
 		return mpz_cmp(as<VarBigInt>(args[0])->getSrc(),
@@ -135,8 +135,8 @@ Var *bigIntNe(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
 	return vm.getTrue();
 }
 
-Var *bigIntDiv(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
-	       const Map<String, AssnArgData> &assn_args)
+Var *bigIntDiv(Interpreter &vm, ModuleLoc loc, Span<Var *> args,
+	       const StringMap<AssnArgData> &assn_args)
 {
 	if(args[1]->is<VarBigInt>()) {
 		// rhs == 0
@@ -167,8 +167,8 @@ Var *bigIntDiv(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
 	return nullptr;
 }
 
-Var *bigIntAssnDiv(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
-		   const Map<String, AssnArgData> &assn_args)
+Var *bigIntAssnDiv(Interpreter &vm, ModuleLoc loc, Span<Var *> args,
+		   const StringMap<AssnArgData> &assn_args)
 {
 	if(args[1]->is<VarBigInt>()) {
 		// rhs == 0
@@ -198,8 +198,8 @@ Var *bigIntAssnDiv(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
 	return nullptr;
 }
 
-Var *bigIntBAnd(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
-		const Map<String, AssnArgData> &assn_args)
+Var *bigIntBAnd(Interpreter &vm, ModuleLoc loc, Span<Var *> args,
+		const StringMap<AssnArgData> &assn_args)
 {
 	if(args[1]->is<VarBigInt>()) {
 		VarBigInt *res = vm.makeVar<VarBigInt>(loc, as<VarBigInt>(args[0])->getSrc());
@@ -211,8 +211,8 @@ Var *bigIntBAnd(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
 	return nullptr;
 }
 
-Var *bigIntBOr(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
-	       const Map<String, AssnArgData> &assn_args)
+Var *bigIntBOr(Interpreter &vm, ModuleLoc loc, Span<Var *> args,
+	       const StringMap<AssnArgData> &assn_args)
 {
 	if(args[1]->is<VarBigInt>()) {
 		VarBigInt *res = vm.makeVar<VarBigInt>(loc, as<VarBigInt>(args[0])->getSrc());
@@ -224,8 +224,8 @@ Var *bigIntBOr(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
 	return nullptr;
 }
 
-Var *bigIntBXOr(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
-		const Map<String, AssnArgData> &assn_args)
+Var *bigIntBXOr(Interpreter &vm, ModuleLoc loc, Span<Var *> args,
+		const StringMap<AssnArgData> &assn_args)
 {
 	if(args[1]->is<VarBigInt>()) {
 		VarBigInt *res = vm.makeVar<VarBigInt>(loc, as<VarBigInt>(args[0])->getSrc());
@@ -237,16 +237,16 @@ Var *bigIntBXOr(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
 	return nullptr;
 }
 
-Var *bigIntBNot(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
-		const Map<String, AssnArgData> &assn_args)
+Var *bigIntBNot(Interpreter &vm, ModuleLoc loc, Span<Var *> args,
+		const StringMap<AssnArgData> &assn_args)
 {
 	VarBigInt *res = vm.makeVar<VarBigInt>(loc, as<VarBigInt>(args[0])->getSrc());
 	mpz_com(res->get(), as<VarBigInt>(args[0])->getSrc());
 	return res;
 }
 
-Var *bigIntBAndAssn(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
-		    const Map<String, AssnArgData> &assn_args)
+Var *bigIntBAndAssn(Interpreter &vm, ModuleLoc loc, Span<Var *> args,
+		    const StringMap<AssnArgData> &assn_args)
 {
 	if(args[1]->is<VarBigInt>()) {
 		mpz_and(as<VarBigInt>(args[0])->get(), as<VarBigInt>(args[0])->getSrc(),
@@ -260,8 +260,8 @@ Var *bigIntBAndAssn(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
 	return nullptr;
 }
 
-Var *bigIntBOrAssn(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
-		   const Map<String, AssnArgData> &assn_args)
+Var *bigIntBOrAssn(Interpreter &vm, ModuleLoc loc, Span<Var *> args,
+		   const StringMap<AssnArgData> &assn_args)
 {
 	if(args[1]->is<VarBigInt>()) {
 		mpz_ior(as<VarBigInt>(args[0])->get(), as<VarBigInt>(args[0])->getSrc(),
@@ -273,8 +273,8 @@ Var *bigIntBOrAssn(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
 	return nullptr;
 }
 
-Var *bigIntBXOrAssn(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
-		    const Map<String, AssnArgData> &assn_args)
+Var *bigIntBXOrAssn(Interpreter &vm, ModuleLoc loc, Span<Var *> args,
+		    const StringMap<AssnArgData> &assn_args)
 {
 	if(args[1]->is<VarBigInt>()) {
 		mpz_xor(as<VarBigInt>(args[0])->get(), as<VarBigInt>(args[0])->getSrc(),
@@ -285,15 +285,15 @@ Var *bigIntBXOrAssn(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
 	return nullptr;
 }
 
-Var *bigIntBNotAssn(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
-		    const Map<String, AssnArgData> &assn_args)
+Var *bigIntBNotAssn(Interpreter &vm, ModuleLoc loc, Span<Var *> args,
+		    const StringMap<AssnArgData> &assn_args)
 {
 	mpz_com(as<VarBigInt>(args[0])->get(), as<VarBigInt>(args[0])->getSrc());
 	return args[0];
 }
 
-Var *bigIntLShift(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
-		  const Map<String, AssnArgData> &assn_args)
+Var *bigIntLShift(Interpreter &vm, ModuleLoc loc, Span<Var *> args,
+		  const StringMap<AssnArgData> &assn_args)
 {
 	if(args[1]->is<VarBigInt>()) {
 		VarBigInt *res = vm.makeVar<VarBigInt>(loc, as<VarBigInt>(args[0])->getSrc());
@@ -316,8 +316,8 @@ Var *bigIntLShift(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
 	return nullptr;
 }
 
-Var *bigIntRShift(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
-		  const Map<String, AssnArgData> &assn_args)
+Var *bigIntRShift(Interpreter &vm, ModuleLoc loc, Span<Var *> args,
+		  const StringMap<AssnArgData> &assn_args)
 {
 	if(args[1]->is<VarBigInt>()) {
 		VarBigInt *res = vm.makeVar<VarBigInt>(loc, as<VarBigInt>(args[0])->getSrc());
@@ -340,8 +340,8 @@ Var *bigIntRShift(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
 	return nullptr;
 }
 
-Var *bigIntLShiftAssn(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
-		      const Map<String, AssnArgData> &assn_args)
+Var *bigIntLShiftAssn(Interpreter &vm, ModuleLoc loc, Span<Var *> args,
+		      const StringMap<AssnArgData> &assn_args)
 {
 	if(args[1]->is<VarBigInt>()) {
 		mpz_mul_2exp(as<VarBigInt>(args[0])->get(), as<VarBigInt>(args[0])->getSrc(),
@@ -361,8 +361,8 @@ Var *bigIntLShiftAssn(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
 	return nullptr;
 }
 
-Var *bigIntRShiftAssn(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
-		      const Map<String, AssnArgData> &assn_args)
+Var *bigIntRShiftAssn(Interpreter &vm, ModuleLoc loc, Span<Var *> args,
+		      const StringMap<AssnArgData> &assn_args)
 {
 	if(args[1]->is<VarBigInt>()) {
 		mpz_div_2exp(as<VarBigInt>(args[0])->get(), as<VarBigInt>(args[0])->getSrc(),
@@ -382,8 +382,8 @@ Var *bigIntRShiftAssn(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
 	return nullptr;
 }
 
-Var *bigIntPow(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
-	       const Map<String, AssnArgData> &assn_args)
+Var *bigIntPow(Interpreter &vm, ModuleLoc loc, Span<Var *> args,
+	       const StringMap<AssnArgData> &assn_args)
 {
 	if(args[1]->is<VarBigInt>()) {
 		VarBigInt *res = vm.makeVar<VarBigInt>(loc, as<VarBigInt>(args[0])->getSrc());
@@ -403,8 +403,8 @@ Var *bigIntPow(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
 	return nullptr;
 }
 
-Var *bigIntRoot(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
-		const Map<String, AssnArgData> &assn_args)
+Var *bigIntRoot(Interpreter &vm, ModuleLoc loc, Span<Var *> args,
+		const StringMap<AssnArgData> &assn_args)
 {
 	if(args[1]->is<VarBigInt>()) {
 		VarBigInt *res = vm.makeVar<VarBigInt>(loc, as<VarBigInt>(args[0])->getSrc());
@@ -424,58 +424,58 @@ Var *bigIntRoot(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
 	return nullptr;
 }
 
-Var *bigIntPreInc(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
-		  const Map<String, AssnArgData> &assn_args)
+Var *bigIntPreInc(Interpreter &vm, ModuleLoc loc, Span<Var *> args,
+		  const StringMap<AssnArgData> &assn_args)
 {
 	mpz_add_ui(as<VarBigInt>(args[0])->get(), as<VarBigInt>(args[0])->getSrc(), 1);
 	return args[0];
 }
 
-Var *bigIntPostInc(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
-		   const Map<String, AssnArgData> &assn_args)
+Var *bigIntPostInc(Interpreter &vm, ModuleLoc loc, Span<Var *> args,
+		   const StringMap<AssnArgData> &assn_args)
 {
 	VarBigInt *res = vm.makeVar<VarBigInt>(loc, as<VarBigInt>(args[0])->getSrc());
 	mpz_add_ui(as<VarBigInt>(args[0])->get(), as<VarBigInt>(args[0])->getSrc(), 1);
 	return res;
 }
 
-Var *bigIntPreDec(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
-		  const Map<String, AssnArgData> &assn_args)
+Var *bigIntPreDec(Interpreter &vm, ModuleLoc loc, Span<Var *> args,
+		  const StringMap<AssnArgData> &assn_args)
 {
 	mpz_sub_ui(as<VarBigInt>(args[0])->get(), as<VarBigInt>(args[0])->getSrc(), 1);
 	return args[0];
 }
 
-Var *bigIntPostDec(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
-		   const Map<String, AssnArgData> &assn_args)
+Var *bigIntPostDec(Interpreter &vm, ModuleLoc loc, Span<Var *> args,
+		   const StringMap<AssnArgData> &assn_args)
 {
 	VarBigInt *res = vm.makeVar<VarBigInt>(loc, as<VarBigInt>(args[0])->getSrc());
 	mpz_sub_ui(as<VarBigInt>(args[0])->get(), as<VarBigInt>(args[0])->getSrc(), 1);
 	return res;
 }
 
-Var *bigIntUSub(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
-		const Map<String, AssnArgData> &assn_args)
+Var *bigIntUSub(Interpreter &vm, ModuleLoc loc, Span<Var *> args,
+		const StringMap<AssnArgData> &assn_args)
 {
 	VarBigInt *res = vm.makeVar<VarBigInt>(loc, as<VarBigInt>(args[0])->getSrc());
 	mpz_neg(res->get(), res->getSrc());
 	return res;
 }
 
-Var *bigIntPopCnt(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
-		  const Map<String, AssnArgData> &assn_args)
+Var *bigIntPopCnt(Interpreter &vm, ModuleLoc loc, Span<Var *> args,
+		  const StringMap<AssnArgData> &assn_args)
 {
 	return vm.makeVar<VarBigInt>(loc, mpz_popcount(as<VarBigInt>(args[0])->getSrc()));
 }
 
-Var *bigIntToInt(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
-		 const Map<String, AssnArgData> &assn_args)
+Var *bigIntToInt(Interpreter &vm, ModuleLoc loc, Span<Var *> args,
+		 const StringMap<AssnArgData> &assn_args)
 {
 	return vm.makeVar<VarBigInt>(loc, mpz_get_si(as<VarBigInt>(args[0])->get()));
 }
 
-Var *bigIntToStr(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
-		 const Map<String, AssnArgData> &assn_args)
+Var *bigIntToStr(Interpreter &vm, ModuleLoc loc, Span<Var *> args,
+		 const StringMap<AssnArgData> &assn_args)
 {
 	typedef void (*gmp_freefunc_t)(void *, size_t);
 
@@ -498,12 +498,11 @@ class VarBigIntIterator : public Var
 	bool reversed;
 
 public:
-	VarBigIntIterator(const ModuleLoc *loc);
-	VarBigIntIterator(const ModuleLoc *loc, mpz_srcptr _begin, mpz_srcptr _end,
-			  mpz_srcptr _step);
+	VarBigIntIterator(ModuleLoc loc);
+	VarBigIntIterator(ModuleLoc loc, mpz_srcptr _begin, mpz_srcptr _end, mpz_srcptr _step);
 	~VarBigIntIterator();
 
-	Var *copy(const ModuleLoc *loc);
+	Var *copy(ModuleLoc loc);
 	void set(Var *from);
 
 	bool next(mpz_ptr val);
@@ -515,7 +514,7 @@ public:
 	inline mpz_ptr getCurr() { return curr; }
 };
 
-VarBigIntIterator::VarBigIntIterator(const ModuleLoc *loc)
+VarBigIntIterator::VarBigIntIterator(ModuleLoc loc)
 	: Var(loc, typeID<VarBigIntIterator>(), false, false), started(false), reversed(false)
 {
 	mpz_init(begin);
@@ -523,7 +522,7 @@ VarBigIntIterator::VarBigIntIterator(const ModuleLoc *loc)
 	mpz_init(step);
 	mpz_init(curr);
 }
-VarBigIntIterator::VarBigIntIterator(const ModuleLoc *loc, mpz_srcptr _begin, mpz_srcptr _end,
+VarBigIntIterator::VarBigIntIterator(ModuleLoc loc, mpz_srcptr _begin, mpz_srcptr _end,
 				     mpz_srcptr _step)
 	: Var(loc, typeID<VarBigIntIterator>(), false, false), started(false),
 	  reversed(mpz_cmp_si(_step, 0) < 0)
@@ -535,10 +534,7 @@ VarBigIntIterator::VarBigIntIterator(const ModuleLoc *loc, mpz_srcptr _begin, mp
 }
 VarBigIntIterator::~VarBigIntIterator() { mpz_clears(begin, end, step, curr, NULL); }
 
-Var *VarBigIntIterator::copy(const ModuleLoc *loc)
-{
-	return new VarBigIntIterator(loc, begin, end, step);
-}
+Var *VarBigIntIterator::copy(ModuleLoc loc) { return new VarBigIntIterator(loc, begin, end, step); }
 void VarBigIntIterator::set(Var *from)
 {
 	VarBigIntIterator *f = as<VarBigIntIterator>(from);
@@ -584,8 +580,8 @@ bool VarBigIntIterator::next(mpz_ptr val)
 	return true;
 }
 
-Var *bigIntRange(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
-		 const Map<String, AssnArgData> &assn_args)
+Var *bigIntRange(Interpreter &vm, ModuleLoc loc, Span<Var *> args,
+		 const StringMap<AssnArgData> &assn_args)
 {
 	Var *lhs_base  = args[1];
 	Var *rhs_base  = args.size() > 2 ? args[2] : nullptr;
@@ -620,8 +616,8 @@ Var *bigIntRange(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
 	return res;
 }
 
-Var *getBigIntIteratorNext(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
-			   const Map<String, AssnArgData> &assn_args)
+Var *getBigIntIteratorNext(Interpreter &vm, ModuleLoc loc, Span<Var *> args,
+			   const StringMap<AssnArgData> &assn_args)
 {
 	VarBigIntIterator *it = as<VarBigIntIterator>(args[0]);
 	mpz_t _res;
@@ -636,8 +632,8 @@ Var *getBigIntIteratorNext(Interpreter &vm, const ModuleLoc *loc, Span<Var *> ar
 
 // RNG
 
-Var *rngSeedInt(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
-		const Map<String, AssnArgData> &assn_args)
+Var *rngSeedInt(Interpreter &vm, ModuleLoc loc, Span<Var *> args,
+		const StringMap<AssnArgData> &assn_args)
 {
 	if(!args[1]->is<VarBigInt>()) {
 		vm.fail(loc,
@@ -649,8 +645,8 @@ Var *rngSeedInt(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
 }
 
 // [0, to)
-Var *rngGetInt(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
-	       const Map<String, AssnArgData> &assn_args)
+Var *rngGetInt(Interpreter &vm, ModuleLoc loc, Span<Var *> args,
+	       const StringMap<AssnArgData> &assn_args)
 {
 	if(!args[1]->is<VarBigInt>()) {
 		vm.fail(loc,

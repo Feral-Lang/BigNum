@@ -5,8 +5,8 @@
 /////////////////////////////////////////// Functions ////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-Var *bigFltNewNative(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
-		     const Map<String, AssnArgData> &assn_args)
+Var *bigFltNewNative(Interpreter &vm, ModuleLoc loc, Span<Var *> args,
+		     const StringMap<AssnArgData> &assn_args)
 {
 	if(!args[1]->is<VarFlt>() && !args[1]->is<VarStr>() && !args[1]->is<VarBigInt>() &&
 	   !args[1]->is<VarBigFlt>())
@@ -31,8 +31,8 @@ Var *bigFltNewNative(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
 }
 
 #define ARITHF_FUNC(fn, name, namez)                                                             \
-	Var *bigFlt##fn(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,                 \
-			const Map<String, AssnArgData> &assn_args)                               \
+	Var *bigFlt##fn(Interpreter &vm, ModuleLoc loc, Span<Var *> args,                        \
+			const StringMap<AssnArgData> &assn_args)                                 \
 	{                                                                                        \
 		if(args[1]->is<VarBigInt>()) {                                                   \
 			VarBigFlt *res =                                                         \
@@ -53,8 +53,8 @@ Var *bigFltNewNative(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
 	}
 
 #define ARITHF_ASSN_FUNC(fn, name, namez)                                                         \
-	Var *bigFltAssn##fn(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,              \
-			    const Map<String, AssnArgData> &assn_args)                            \
+	Var *bigFltAssn##fn(Interpreter &vm, ModuleLoc loc, Span<Var *> args,                     \
+			    const StringMap<AssnArgData> &assn_args)                              \
 	{                                                                                         \
 		if(args[1]->is<VarBigInt>()) {                                                    \
 			mpfr_##namez(                                                             \
@@ -73,8 +73,8 @@ Var *bigFltNewNative(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
 	}
 
 #define LOGICF_FUNC(name, checksym)                                                               \
-	Var *bigFlt##name(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,                \
-			  const Map<String, AssnArgData> &assn_args)                              \
+	Var *bigFlt##name(Interpreter &vm, ModuleLoc loc, Span<Var *> args,                       \
+			  const StringMap<AssnArgData> &assn_args)                                \
 	{                                                                                         \
 		if(args[1]->is<VarBigFlt>()) {                                                    \
 			return mpfr_cmp(as<VarBigFlt>(args[0])->get(),                            \
@@ -102,8 +102,8 @@ LOGICF_FUNC(GT, >)
 LOGICF_FUNC(LE, <=)
 LOGICF_FUNC(GE, >=)
 
-Var *bigFltEQ(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
-	      const Map<String, AssnArgData> &assn_args)
+Var *bigFltEQ(Interpreter &vm, ModuleLoc loc, Span<Var *> args,
+	      const StringMap<AssnArgData> &assn_args)
 {
 	if(!args[1]->is<VarBigFlt>()) return vm.getFalse();
 	return mpfr_cmp(as<VarBigFlt>(args[0])->get(), as<VarBigFlt>(args[1])->get()) == 0
@@ -111,8 +111,8 @@ Var *bigFltEQ(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
 	       : vm.getFalse();
 }
 
-Var *bigFltNE(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
-	      const Map<String, AssnArgData> &assn_args)
+Var *bigFltNE(Interpreter &vm, ModuleLoc loc, Span<Var *> args,
+	      const StringMap<AssnArgData> &assn_args)
 {
 	if(!args[1]->is<VarBigFlt>()) return vm.getTrue();
 	return mpfr_cmp(as<VarBigFlt>(args[0])->get(), as<VarBigFlt>(args[1])->get()) != 0
@@ -120,16 +120,16 @@ Var *bigFltNE(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
 	       : vm.getFalse();
 }
 
-Var *bigFltPreInc(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
-		  const Map<String, AssnArgData> &assn_args)
+Var *bigFltPreInc(Interpreter &vm, ModuleLoc loc, Span<Var *> args,
+		  const StringMap<AssnArgData> &assn_args)
 {
 	mpfr_add_ui(as<VarBigFlt>(args[0])->get(), as<VarBigFlt>(args[0])->getSrc(), 1,
 		    mpfr_get_default_rounding_mode());
 	return args[0];
 }
 
-Var *bigFltPostInc(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
-		   const Map<String, AssnArgData> &assn_args)
+Var *bigFltPostInc(Interpreter &vm, ModuleLoc loc, Span<Var *> args,
+		   const StringMap<AssnArgData> &assn_args)
 {
 	VarBigFlt *res = vm.makeVar<VarBigFlt>(loc, as<VarBigFlt>(args[0])->get());
 	mpfr_add_ui(as<VarBigFlt>(args[0])->get(), as<VarBigFlt>(args[0])->getSrc(), 1,
@@ -137,16 +137,16 @@ Var *bigFltPostInc(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
 	return res;
 }
 
-Var *bigFltPreDec(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
-		  const Map<String, AssnArgData> &assn_args)
+Var *bigFltPreDec(Interpreter &vm, ModuleLoc loc, Span<Var *> args,
+		  const StringMap<AssnArgData> &assn_args)
 {
 	mpfr_sub_ui(as<VarBigFlt>(args[0])->get(), as<VarBigFlt>(args[0])->getSrc(), 1,
 		    mpfr_get_default_rounding_mode());
 	return args[0];
 }
 
-Var *bigFltPostDec(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
-		   const Map<String, AssnArgData> &assn_args)
+Var *bigFltPostDec(Interpreter &vm, ModuleLoc loc, Span<Var *> args,
+		   const StringMap<AssnArgData> &assn_args)
 {
 	VarBigFlt *res = vm.makeVar<VarBigFlt>(loc, as<VarBigFlt>(args[0])->get());
 	mpfr_sub_ui(as<VarBigFlt>(args[0])->get(), as<VarBigFlt>(args[0])->getSrc(), 1,
@@ -154,24 +154,24 @@ Var *bigFltPostDec(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
 	return res;
 }
 
-Var *bigFltUSub(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
-		const Map<String, AssnArgData> &assn_args)
+Var *bigFltUSub(Interpreter &vm, ModuleLoc loc, Span<Var *> args,
+		const StringMap<AssnArgData> &assn_args)
 {
 	VarBigFlt *res = vm.makeVar<VarBigFlt>(loc, as<VarBigFlt>(args[0])->get());
 	mpfr_neg(res->get(), as<VarBigFlt>(args[0])->getSrc(), mpfr_get_default_rounding_mode());
 	return res;
 }
 
-Var *bigFltRound(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
-		 const Map<String, AssnArgData> &assn_args)
+Var *bigFltRound(Interpreter &vm, ModuleLoc loc, Span<Var *> args,
+		 const StringMap<AssnArgData> &assn_args)
 {
 	VarBigInt *res = vm.makeVar<VarBigInt>(loc, 0);
 	mpfr_get_z(res->get(), as<VarBigFlt>(args[0])->getSrc(), MPFR_RNDN);
 	return res;
 }
 
-Var *bigFltPow(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
-	       const Map<String, AssnArgData> &assn_args)
+Var *bigFltPow(Interpreter &vm, ModuleLoc loc, Span<Var *> args,
+	       const StringMap<AssnArgData> &assn_args)
 {
 	if(!args[1]->is<VarBigInt>()) {
 		vm.fail(loc, "power must be an integer, found: ", vm.getTypeName(args[1]));
@@ -183,8 +183,8 @@ Var *bigFltPow(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
 	return res;
 }
 
-Var *bigFltRoot(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
-		const Map<String, AssnArgData> &assn_args)
+Var *bigFltRoot(Interpreter &vm, ModuleLoc loc, Span<Var *> args,
+		const StringMap<AssnArgData> &assn_args)
 {
 	if(!args[1]->is<VarBigInt>()) {
 		vm.fail(loc, "root must be an integer, found: ", vm.getTypeName(args[1]));
@@ -201,14 +201,14 @@ Var *bigFltRoot(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
 	return res;
 }
 
-Var *bigFltToFlt(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
-		 const Map<String, AssnArgData> &assn_args)
+Var *bigFltToFlt(Interpreter &vm, ModuleLoc loc, Span<Var *> args,
+		 const StringMap<AssnArgData> &assn_args)
 {
 	return vm.makeVar<VarFlt>(loc, mpfr_get_d(as<VarBigFlt>(args[0])->get(), MPFR_RNDN));
 }
 
-Var *bigFltToStr(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
-		 const Map<String, AssnArgData> &assn_args)
+Var *bigFltToStr(Interpreter &vm, ModuleLoc loc, Span<Var *> args,
+		 const StringMap<AssnArgData> &assn_args)
 {
 	mpfr_exp_t expo;
 	char *_res  = mpfr_get_str(NULL, &expo, 10, 0, as<VarBigFlt>(args[0])->getSrc(),
@@ -239,8 +239,8 @@ Var *bigFltToStr(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
 // RNG
 
 // [0.0, to]
-Var *rngGetFlt(Interpreter &vm, const ModuleLoc *loc, Span<Var *> args,
-	       const Map<String, AssnArgData> &assn_args)
+Var *rngGetFlt(Interpreter &vm, ModuleLoc loc, Span<Var *> args,
+	       const StringMap<AssnArgData> &assn_args)
 {
 	if(!args[1]->is<VarBigFlt>()) {
 		vm.fail(loc,
